@@ -63,6 +63,12 @@ private void makeExplorNum(int n)
 		}
 	}
  }
+
+public void release()
+{
+	// TODO Auto-generated method stub
+	
+}
  
   
 }

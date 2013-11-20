@@ -45,4 +45,13 @@ public class EnemyManager
 	{
 		return enemies;
 	}
+	public void release()
+	{
+		if (enemybBitmap != null && !enemybBitmap.isRecycled())
+		{
+			enemybBitmap.recycle();
+			enemybBitmap = null;
+		}
+		
+	}
 }

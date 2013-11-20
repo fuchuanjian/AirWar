@@ -44,4 +44,13 @@ public class BackGroundManager
 		if (y2 >= viewHeight)
 			y2 -= viewHeight*2;	
 	}
+	
+	public void release()
+	{
+		if (backMap != null && !backMap.isRecycled())
+		{
+			backMap.recycle();
+			backMap = null;
+		}
+	}
 }

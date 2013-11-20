@@ -62,5 +62,14 @@ public class EnemyBulletManager
 	{
 		return enemyBulletsList;
 	}
+	public void release()
+	{
+		if (enemyBulletMap != null && !enemyBulletMap.isRecycled())
+		{
+			enemyBulletMap.recycle();
+			enemyBulletMap = null;
+		}
+		
+	}
 	
 }

@@ -1,5 +1,18 @@
 package cn.fu.airHero;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PaintFlagsDrawFilter;
+import android.graphics.Point;
+import android.view.MotionEvent;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import cn.fu.airHero.entity.Player;
 import cn.fu.airHero.manager.BackGroundManager;
 import cn.fu.airHero.manager.EnemyBulletManager;
@@ -8,30 +21,15 @@ import cn.fu.airHero.manager.ExplorManger;
 import cn.fu.airHero.manager.HitCheckManager;
 import cn.fu.airHero.manager.PlayerBulletManager;
 import cn.fu.airHero.manager.PlayerManager;
-import android.R.integer;
-import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.DrawFilter;
-import android.graphics.Paint;
-import android.graphics.PaintFlagsDrawFilter;
-import android.graphics.Point;
-import android.util.Log;
-import android.view.MotionEvent;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
-import android.view.View;
 
-public class GameView extends SurfaceView implements SurfaceHolder.Callback, Runnable
+public class GameView extends SurfaceView implements SurfaceHolder.Callback
 {
 	private SurfaceHolder sHolder = null;
 	private Canvas canvas = null;
 	private int viewWidth = 0, viewHeight = 0;
-	private boolean isRunning = false;
 	private BackGroundManager groundManager = null;
 	private PlayerManager playerManager = null;
 	private EnemyManager enemyManager = null;
-	private Thread gamethread = null;
 	private Point playerPoint = null;
 	private PlayerBulletManager playerBulletManager = null;
 	private EnemyBulletManager enemyBulletManager = null;
@@ -48,7 +46,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
 	{
 		viewHeight = this.getHeight();
 		viewWidth = this.getWidth();
-		isRunning = true;
 		if (groundManager == null)
 			groundManager = new BackGroundManager(this);
 		if (playerManager == null)
@@ -60,13 +57,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
 		if (enemyBulletManager == null)
 			enemyBulletManager = new EnemyBulletManager(this);
 		if (hitCheckManager == null)
-			hitCheckManager = new HitCheckManager();
+			hitCheckManager = new HitCheckManager(playerManager, playerBulletManager, enemyManager, enemyBulletManager, explorManger);
 		if (explorManger == null)
 			explorManger = new ExplorManger(this);
 	
-		//	if (gamethread == null)
-		gamethread = new Thread(this);
-		gamethread.start();
+		startRender();
 		
 	}
 	public void surfaceChanged(SurfaceHolder holder, int format, int width, int height)
@@ -74,14 +69,24 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
 	}
 	public void surfaceDestroyed(SurfaceHolder holder)
 	{
-		isRunning = false;
-		gamethread.interrupt();	
-		Log.i("Fu","sufaceDestry");
+		stopRender();
+		
+		//recycle bitmap
+		groundManager.release();
+		playerManager.release();
+		enemyManager.release();
+		playerBulletManager.release();
+		enemyBulletManager.release();
+		hitCheckManager.release();
+		explorManger.release();
 	}
-	public void run()
+	
+	//game runable
+	private Runnable gameRunnable = new Runnable()
 	{
-		while(isRunning)
-		{	
+		@Override
+		public void run()
+		{
 			if (sHolder != null)
 			{
 				canvas = sHolder.lockCanvas();
@@ -99,27 +104,39 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback, Run
 					
 					enemyManager.drawEnemies(canvas, playerPoint,enemyBulletManager);
 					enemyBulletManager.drawAllBullet(canvas);
-					hitCheckManager.checkHit(playerManager, playerBulletManager, enemyManager, enemyBulletManager, explorManger);//Åö×²¼ì²â
+					hitCheckManager.checkHit();
 					
 					explorManger.drawExplors(canvas);
 					sHolder.unlockCanvasAndPost(canvas);
-					if (Player.flood == 0)
+					if (Player.flood <= 0)
 					{
-						isRunning = false;
-						gamethread.interrupt();
-						
+						stopRender();
 					}
 				}		
-			}	
-			try
-			{
-				Thread.sleep(50);
-			} catch (InterruptedException e)
-			{
-				e.printStackTrace();
-			}
-		}	
+			
+		}
 	}
+	};
+	
+	
+	private ScheduledExecutorService mTimer;
+	private void startRender()
+	{
+		if (mTimer != null) {return;};
+		
+		mTimer = Executors.newScheduledThreadPool(1);
+		mTimer.scheduleAtFixedRate(gameRunnable, 0, (long) (1000 / 60), TimeUnit.MILLISECONDS);		
+	}
+	
+	private void stopRender()
+	{
+		if (mTimer != null)
+		{
+			mTimer.shutdownNow();
+			mTimer = null;
+		}
+	}
+	
 	@Override
 	public boolean onTouchEvent(MotionEvent event)
 	{

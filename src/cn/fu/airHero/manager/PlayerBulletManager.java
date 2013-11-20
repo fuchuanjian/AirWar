@@ -62,6 +62,15 @@ public class PlayerBulletManager
 	{
 		return pBulletsList;
 	}
+
+	public void release()
+	{
+		if (playerBulletMap != null && !playerBulletMap.isRecycled())
+		{
+			playerBulletMap.recycle();
+			playerBulletMap = null;
+		}
+	}
 	
 	
 }

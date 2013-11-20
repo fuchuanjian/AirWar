@@ -1,18 +1,16 @@
 package cn.fu.airHero.manager;
 
-import java.util.Random;
-
-import cn.fu.airHero.R;
-import cn.fu.airHero.R.drawable;
-import cn.fu.airHero.entity.Player;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.view.View;
+import cn.fu.airHero.R;
+import cn.fu.airHero.entity.Player;
 
 public class PlayerManager
 {
+	private int score = 0;
 	private Player player = null;
 	private Bitmap playerMap = null;
 	public PlayerManager(View view)
@@ -37,5 +35,22 @@ public class PlayerManager
 	public Player getPlayer()
 	{
 		return player;
+	}
+	public void addScore()
+	{
+		score ++;
+	}
+	public int getScore()
+	{
+		return score;
+	}
+	public void release()
+	{
+		if (playerMap != null && !playerMap.isRecycled())
+		{
+			playerMap.recycle();
+			playerMap = null;
+		}
+		
 	}
 }

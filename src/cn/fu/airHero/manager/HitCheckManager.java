@@ -17,9 +17,23 @@ public class HitCheckManager
 	private ArrayList<EnemyBullet> enemyBulletList = null;
 	private Player player = null;
 	private ExplorManger explorManger;
-	public void checkHit(PlayerManager playerManager, PlayerBulletManager playerBulletManager, EnemyManager enemyManager, EnemyBulletManager enemyBulletManager, ExplorManger explorManger)
+	private PlayerManager playerManager;
+	private PlayerBulletManager playerBulletManager;
+	private EnemyBulletManager enemyBulletManager;
+	private EnemyManager enemyManager;
+	public HitCheckManager(PlayerManager playerManager, PlayerBulletManager playerBulletManager, EnemyManager enemyManager, EnemyBulletManager enemyBulletManager, ExplorManger explorManger)
 	{
+		this.playerManager = playerManager;
+		this.enemyManager = enemyManager;
+		
 		this.explorManger = explorManger;
+		
+		this.playerBulletManager = playerBulletManager;
+		this.enemyBulletManager = enemyBulletManager;
+		
+	}
+	public void checkHit()
+	{
 		checkPlayerBullet(playerBulletManager, enemyManager);
 		checkEnemyBullet(enemyBulletManager, playerManager);
 	}
@@ -38,7 +52,7 @@ public class HitCheckManager
 					{
 						bullet.flg = false;
 						enemy.flg = false;
-						Player.score += 1;//ตรทึ
+						playerManager.addScore();
 						explorManger.makeExplorPoiont(new Point(enemy.centerX, enemy.centerY));
 					}
 				}
@@ -61,6 +75,12 @@ public class HitCheckManager
 				}
 			}
 		}
+		
+	}
+
+	public void release()
+	{
+		// TODO Auto-generated method stub
 		
 	}
 }
