@@ -54,7 +54,7 @@ public class EnemyBulletManager
 			if(bullet.flg)
 			{
 				bullet.drawBulletSelf(canvas);
-				bullet.centerY += 8;
+				bullet.centerY += 30;
 			}
 		}
 	}

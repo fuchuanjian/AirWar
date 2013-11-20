@@ -18,6 +18,7 @@ public class ExplorManger
   private View  view = null;
   public ExplorManger(View view)
   {   this.view = view;
+  	  maps.clear();
 	  makeMaps(4);
 	  makeExplorNum(6);
 	 
@@ -66,7 +67,14 @@ private void makeExplorNum(int n)
 
 public void release()
 {
-	// TODO Auto-generated method stub
+	for (Bitmap bm : maps)
+	{
+		if (!bm.isRecycled())
+		{
+			bm.recycle();
+		}
+	}
+	maps.clear();
 	
 }
  

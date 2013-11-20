@@ -50,7 +50,7 @@ public class Enemy
 	public void fire(EnemyBulletManager enemyBulletManager)
 	{
 		fireIndex ++;
-		if (fireIndex == 30)
+		if (fireIndex == 80)
 		{
 			fireIndex = 0;
 			enemyBulletManager.newOneBullet(new Point(centerX,centerY));	
@@ -65,11 +65,10 @@ public class Enemy
 			init();
 			return;
 		}	
-		int dx = new Random().nextInt(7);
-		int dy = new Random().nextInt(2)+4;
+		int dx = new Random().nextInt(3);
+		int dy = new Random().nextInt(2)+6;
 		y += dy;
 	
-			//朝着玩家运动
 			if (x > point.x + 3)
 			{
 				x -= dx;

@@ -56,10 +56,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 			playerBulletManager =  new PlayerBulletManager(this);	
 		if (enemyBulletManager == null)
 			enemyBulletManager = new EnemyBulletManager(this);
-		if (hitCheckManager == null)
-			hitCheckManager = new HitCheckManager(playerManager, playerBulletManager, enemyManager, enemyBulletManager, explorManger);
 		if (explorManger == null)
 			explorManger = new ExplorManger(this);
+		if (hitCheckManager == null)
+			hitCheckManager = new HitCheckManager(playerManager, playerBulletManager, enemyManager, enemyBulletManager, explorManger);
 	
 		startRender();
 		
@@ -72,13 +72,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 		stopRender();
 		
 		//recycle bitmap
-		groundManager.release();
-		playerManager.release();
-		enemyManager.release();
-		playerBulletManager.release();
-		enemyBulletManager.release();
-		hitCheckManager.release();
-		explorManger.release();
+		
 	}
 	
 	//game runable
@@ -108,7 +102,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 					
 					explorManger.drawExplors(canvas);
 					sHolder.unlockCanvasAndPost(canvas);
-					if (Player.flood <= 0)
+					if (playerManager.getFlood() <= 0)
 					{
 						stopRender();
 					}
@@ -118,6 +112,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback
 	}
 	};
 	
+	public void onDestroy()
+	{
+		groundManager.release();
+		playerManager.release();
+		enemyManager.release();
+		playerBulletManager.release();
+		enemyBulletManager.release();
+		hitCheckManager.release();
+		explorManger.release();
+	}
 	
 	private ScheduledExecutorService mTimer;
 	private void startRender()

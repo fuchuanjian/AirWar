@@ -13,7 +13,6 @@ import android.view.View;
 
 public class Player
 {
-	public static int flood = 10;//ÑªÁ¿
 	private Bitmap playerMap = null;
 	public int x=0,y=0;
 	public int selfWidth=0, selfHeigh=0;
@@ -21,21 +20,16 @@ public class Player
 	private int fireIndex = 0;
 	private View view = null;
 	public boolean flg = false;
-	private Paint paint = new Paint();
-	public static int score = 0;//µÃ·Ö
 	public Player(View view, Bitmap playerMap)
 	{
 		this.playerMap = playerMap;
 		this.view = view;
-		paint.setColor(Color.RED);
-		paint.setTextSize(20);
 		selfWidth = playerMap.getWidth();
 		selfHeigh = playerMap.getHeight();
 		init();
 	}
 	public void init()
 	{
-		flood = flood-1;
 		flg = true;
 		centerX = view.getWidth()/2;
 		centerY = view.getHeight() - playerMap.getHeight()/2;
@@ -51,9 +45,7 @@ public class Player
 			init();
 			canvas.drawBitmap(playerMap, x, y, null);
 		}
-		
-		canvas.drawText("Flood: "+flood, 10, view.getHeight()-10, paint);
-		canvas.drawText("Scroe: "+ score, 10 ,20, paint);
+	
 	}
 	public void move(Point point)
 	{

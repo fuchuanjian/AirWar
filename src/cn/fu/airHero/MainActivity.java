@@ -86,7 +86,9 @@ public class MainActivity extends Activity {
     	if (playerName != null)
     	{
     	}
+    	gameView.onDestroy();
     	 super.onDestroy();
+    	 
     	 android.os.Process.killProcess(android.os.Process.myPid());
          System.exit(0);
 

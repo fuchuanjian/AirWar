@@ -54,7 +54,7 @@ public class PlayerBulletManager
 			if(bullet.flg)
 			{
 				bullet.drawBulletSelf(canvas);
-				bullet.centerY -= 15;
+				bullet.centerY -= 30;
 			}
 		}
 	}
